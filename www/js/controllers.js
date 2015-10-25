@@ -16,6 +16,32 @@ angular.module('upetapp.controllers', [])
     };
 })
 
+.controller('WelcomeController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
+    if ($stateParams.clear) {
+        $ionicHistory.clearHistory();
+        $ionicHistory.clearCache();
+    }
+
+    $scope.login = function() {
+        $state.go('login');
+    };
+
+    $scope.signUp = function() {
+        $state.go('register');
+    };
+
+    if ($rootScope.isLoggedIn) {
+        $state.go('app.pet');
+    }
+})
+
+.controller('HomeController', function($scope, $state, $rootScope) {
+
+    if (!$rootScope.isLoggedIn) {
+        $state.go('welcome');
+    }
+})
+
 .controller('LoginController', function($scope, $state, $rootScope, $ionicLoading) {
     $scope.user = {
         username: null,
@@ -39,7 +65,7 @@ angular.module('upetapp.controllers', [])
                 $ionicLoading.hide();
                 $rootScope.user = user;
                 $rootScope.isLoggedIn = true;
-                $state.go('app.home', {
+                $state.go('app.pet', {
                     clear: true
                 });
             },
@@ -62,26 +88,6 @@ angular.module('upetapp.controllers', [])
     };
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-})
-.controller('WelcomeController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
-    if ($stateParams.clear) {
-        $ionicHistory.clearHistory();
-        $ionicHistory.clearCache();
-    }
-
-    $scope.login = function() {
-        $state.go('login');
-    };
-
-    $scope.signUp = function() {
-        $state.go('register');
-    };
-
-    if ($rootScope.isLoggedIn) {
-        $state.go('app.pet');
-    }
-})
 .controller('ForgotPasswordController', function($scope, $state, $ionicLoading) {
     $scope.user = {};
     $scope.error = {};
@@ -122,6 +128,7 @@ angular.module('upetapp.controllers', [])
         $state.go('login');
     };
 })
+
 .controller('RegisterController', function($scope, $state, $ionicLoading, $rootScope) {
     $scope.user = {};
     $scope.error = {};
@@ -145,10 +152,11 @@ angular.module('upetapp.controllers', [])
 
         user.signUp(null, {
             success: function(user) {
+                alert("success!");
                 $ionicLoading.hide();
                 $rootScope.user = user;
                 $rootScope.isLoggedIn = true;
-                $state.go('app.home', {
+                $state.go('app.pet', {
                     clear: true
                 });
             },
@@ -168,4 +176,30 @@ angular.module('upetapp.controllers', [])
         });
     };
 })
-;
+
+.controller('MainController', function($scope, $state, $rootScope, $stateParams, $ionicHistory) {
+    if ($stateParams.clear) {
+        $ionicHistory.clearHistory();
+    }
+
+    $scope.rightButtons = [{
+        type: 'button-positive',
+        content: '<i class="icon ion-navicon"></i>',
+        tap: function(e) {
+            $scope.sideMenuController.toggleRight();
+        }
+    }];
+
+    $scope.logout = function() {
+        Parse.User.logOut();
+        $rootScope.user = null;
+        $rootScope.isLoggedIn = false;
+        $state.go('welcome', {
+            clear: true
+        });
+    };
+
+    $scope.toggleMenu = function() {
+        $scope.sideMenuController.toggleRight();
+    };
+});

@@ -1,0 +1,15 @@
+/* Your app's CSS, go crazy, make it your own */
+
+.ionic-logo {
+  display: block;
+  margin: 15px auto;
+  width: 96px;
+  height: 96px;
+}
+/* Empty. Add your own CSS if you like */
+ .pane {
+        background: url("../img/fondo.jpg") no-repeat center center fixed; 
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+ }
