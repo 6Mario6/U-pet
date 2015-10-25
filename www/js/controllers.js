@@ -35,10 +35,10 @@ angular.module('upetapp.controllers', [])
     }
 })
 
-.controller('HomeController', function($scope, $state, $rootScope) {
+.controller('PetController', function($scope, $state, $rootScope) {
 
     if (!$rootScope.isLoggedIn) {
-        $state.go('welcome');
+        
     }
 })
 
@@ -73,10 +73,10 @@ angular.module('upetapp.controllers', [])
                 $ionicLoading.hide();
                 // The login failed. Check error to see why.
                 if (err.code === 101) {
-                    $scope.error.message = 'Invalid login credentials';
+                    $scope.error.message = 'Credenciales de acceso invalidos';
                 } else {
-                    $scope.error.message = 'An unexpected error has ' +
-                        'occurred, please try again.';
+                    $scope.error.message = 'Se ha producido un error desconocido, ' +
+                        'por favor intente de nuevo.';
                 }
                 $scope.$apply();
             }
@@ -85,6 +85,9 @@ angular.module('upetapp.controllers', [])
 
     $scope.forgot = function() {
         $state.go('forgot');
+    };
+    $scope.back = function() {
+        $state.go('welcome');
     };
 })
 
@@ -114,10 +117,10 @@ angular.module('upetapp.controllers', [])
             error: function(err) {
                 $ionicLoading.hide();
                 if (err.code === 125) {
-                    $scope.error.message = 'Email address does not exist';
+                    $scope.error.message = 'Dirección de correo electrónico no existe';
                 } else {
-                    $scope.error.message = 'An unknown error has occurred, ' +
-                        'please try again';
+                    $scope.error.message = 'Se ha producido un error desconocido, ' +
+                        'por favor intente de nuevo.';
                 }
                 $scope.$apply();
             }
@@ -125,6 +128,9 @@ angular.module('upetapp.controllers', [])
     };
 
     $scope.login = function() {
+        $state.go('login');
+    };
+    $scope.back = function() {
         $state.go('login');
     };
 })
@@ -163,17 +169,18 @@ angular.module('upetapp.controllers', [])
             error: function(user, error) {
                 $ionicLoading.hide();
                 if (error.code === 125) {
-                    $scope.error.message = 'Please specify a valid email ' +
-                        'address';
+                    $scope.error.message = 'Por favor, indique una dirección de correo electrónico válida';
                 } else if (error.code === 202) {
-                    $scope.error.message = 'The email address is already ' +
-                        'registered';
+                    $scope.error.message = 'La dirección de correo electrónico ya está registrado';
                 } else {
                     $scope.error.message = error.message;
                 }
                 $scope.$apply();
             }
         });
+    };
+     $scope.back = function() {
+        $state.go('welcome');
     };
 })
 

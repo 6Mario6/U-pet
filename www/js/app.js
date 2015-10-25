@@ -58,7 +58,8 @@ $stateProvider.state('welcome', {
         url : '/pet',
         views : {
             'menuContent' : {
-                templateUrl : 'templates/pet.html'
+                templateUrl : 'templates/pet.html',
+                controller: 'PetController'
             }
         }
     }).state('app.activity', {
