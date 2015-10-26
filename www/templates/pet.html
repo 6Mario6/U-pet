@@ -1,5 +1,21 @@
-<ion-view view-title="Browse">
-  <ion-content>
-    <h1>Browse</h1>
+<ion-view view-title="Mascotas">
+ <div class="bar bar-subheader item-input-inset
+      bar-light">
+      <label class="item-input-wrapper">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" ng-model="query" placeholder="Search">
+      </lable>
+ </div>
+  <ion-content class="has-subheader">
+   <ion-list ng-hide="noData">
+   		 <ion-item>
+   		 </ion-item>
+   </ion-list>
+   <div class="card" >
+      <div class="item item-text-wrap" ng-show="noData"><span>
+         No hay mascotas agregadas. Click  <a href="javascript:" ng-click="newPet()">aqui</a> para ingresar mascota.
+         </span>
+      </div>
+   </div>
   </ion-content>
 </ion-view>

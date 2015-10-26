@@ -1,5 +1,5 @@
 angular.module('upetapp',
-        [ 'ionic', 'upetapp.controllers' ]
+        [ 'ionic', 'upetapp.controllers' ,'upetapp.factory']
     )
 .run(function($ionicPlatform,$state, $rootScope) {
     $ionicPlatform.ready(function() {

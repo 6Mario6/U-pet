@@ -1,20 +1,25 @@
 angular.module('upetapp.controllers', [])
 
-.controller('AppController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
+.controller('AppController', ['$scope', '$state', '$rootScope', '$ionicHistory', '$stateParams','Loader',
+    function($scope, $state, $rootScope, $ionicHistory, $stateParams,Loader) {
     if ($stateParams.clear) {
         $ionicHistory.clearHistory();
         $ionicHistory.clearCache();
     }
-
+    alert($rootScope.isLoggedIn);
+    if (!$rootScope.isLoggedIn) {
+         $state.go('welcome');
+    }
     $scope.logout = function() {
         Parse.User.logOut();
+        Loader.toggleLoadingWithMessage("Saliendo...", 2000);
         $rootScope.user = null;
         $rootScope.isLoggedIn = false;
         $state.go('welcome', {
             clear: true
         });
     };
-})
+}])
 
 .controller('WelcomeController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
     if ($stateParams.clear) {
@@ -38,31 +43,33 @@ angular.module('upetapp.controllers', [])
 .controller('PetController', function($scope, $state, $rootScope) {
 
     if (!$rootScope.isLoggedIn) {
-        
+         $state.go('welcome');
+    }
+    $scope.pets = [];
+     if ($scope.pets.length == 0) {
+      $scope.noData = true;
+    } else {
+      $scope.noData = false;
     }
 })
 
-.controller('LoginController', function($scope, $state, $rootScope, $ionicLoading) {
-    $scope.user = {
+.controller('LoginController', [ '$scope', '$state', '$rootScope', 'Loader',
+    function($scope, $state, $rootScope, Loader) {
+
+        $scope.user = {
         username: null,
         password: null
-    };
+        };
 
     $scope.error = {};
 
     $scope.login = function() {
-        $scope.loading = $ionicLoading.show({
-            content: 'Logging in',
-            animation: 'fade-in',
-            showBackdrop: true,
-            maxWidth: 200,
-            showDelay: 0
-        });
+       Loader.showLoading();
 
         var user = $scope.user;
         Parse.User.logIn(('' + user.username).toLowerCase(), user.password, {
             success: function(user) {
-                $ionicLoading.hide();
+                Loader.hideLoading();
                 $rootScope.user = user;
                 $rootScope.isLoggedIn = true;
                 $state.go('app.pet', {
@@ -70,10 +77,10 @@ angular.module('upetapp.controllers', [])
                 });
             },
             error: function(user, err) {
-                $ionicLoading.hide();
+                Loader.hideLoading();
                 // The login failed. Check error to see why.
                 if (err.code === 101) {
-                    $scope.error.message = 'Credenciales de acceso invalidos';
+                    $scope.error.message = 'Credenciales de acceso invalidas';
                 } else {
                     $scope.error.message = 'Se ha producido un error desconocido, ' +
                         'por favor intente de nuevo.';
@@ -89,7 +96,8 @@ angular.module('upetapp.controllers', [])
     $scope.back = function() {
         $state.go('welcome');
     };
-})
+    }
+])
 
 .controller('ForgotPasswordController', function($scope, $state, $ionicLoading) {
     $scope.user = {};
@@ -135,7 +143,10 @@ angular.module('upetapp.controllers', [])
     };
 })
 
-.controller('RegisterController', function($scope, $state, $ionicLoading, $rootScope) {
+.controller('RegisterController', [ '$scope', '$state', '$rootScope', 'Loader',
+    function($scope, $state, $rootScope, Loader){
+
+
     $scope.user = {};
     $scope.error = {};
 
@@ -143,13 +154,7 @@ angular.module('upetapp.controllers', [])
 
         // TODO: add age verification step
 
-        $scope.loading = $ionicLoading.show({
-            content: 'Sending',
-            animation: 'fade-in',
-            showBackdrop: true,
-            maxWidth: 200,
-            showDelay: 0
-        });
+        Loader.showLoading();
 
         var user = new Parse.User();
         user.set("username", $scope.user.email);
@@ -158,8 +163,8 @@ angular.module('upetapp.controllers', [])
 
         user.signUp(null, {
             success: function(user) {
-                alert("success!");
-                $ionicLoading.hide();
+                
+                Loader.hideLoading();
                 $rootScope.user = user;
                 $rootScope.isLoggedIn = true;
                 $state.go('app.pet', {
@@ -167,7 +172,7 @@ angular.module('upetapp.controllers', [])
                 });
             },
             error: function(user, error) {
-                $ionicLoading.hide();
+                Loader.hideLoading();
                 if (error.code === 125) {
                     $scope.error.message = 'Por favor, indique una dirección de correo electrónico válida';
                 } else if (error.code === 202) {
@@ -182,9 +187,10 @@ angular.module('upetapp.controllers', [])
      $scope.back = function() {
         $state.go('welcome');
     };
-})
-
-.controller('MainController', function($scope, $state, $rootScope, $stateParams, $ionicHistory) {
+}
+])
+.controller('MainController',[ '$scope', '$state', '$rootScope', '$stateParams', '$ionicHistory','Loader', 
+    function($scope, $state, $rootScope, $stateParams, $ionicHistory,Loader) {
     if ($stateParams.clear) {
         $ionicHistory.clearHistory();
     }
@@ -199,6 +205,7 @@ angular.module('upetapp.controllers', [])
 
     $scope.logout = function() {
         Parse.User.logOut();
+        Loader.toggleLoadingWithMessage("Saliendo...", 2000);
         $rootScope.user = null;
         $rootScope.isLoggedIn = false;
         $state.go('welcome', {
@@ -209,4 +216,5 @@ angular.module('upetapp.controllers', [])
     $scope.toggleMenu = function() {
         $scope.sideMenuController.toggleRight();
     };
-});
+    }
+]);
