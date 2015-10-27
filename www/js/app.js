@@ -1,5 +1,5 @@
 angular.module('upetapp',
-        [ 'ionic', 'upetapp.controllers' ,'upetapp.factory','ngCordova']
+        [ 'ionic', 'upetapp.controllers' ,'upetapp.factory','ionic-datepicker']
     )
 .run(function($ionicPlatform,$state, $rootScope) {
     $ionicPlatform.ready(function() {

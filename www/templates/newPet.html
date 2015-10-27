@@ -52,6 +52,16 @@
 			<span class="input-label">Fecha de nacimiento</span>
 			<input type="date" ng-model="data.birthdate">
 	</label>
+	
+	
+	<ionic-datepicker input-obj="datepickerObject">
+<a class="item item-icon-left">
+    <i class="icon ion-calendar"></i>
+    Fecha de nacimiento:  {{datepickerObject.inputDate | date:'dd - MMMM - yyyy'}}
+  </a>
+</ionic-datepicker>
+
+
   </div>
   <button class="button button-block button-royal activated" ng-click="createNew()" >Aceptar</button>
 

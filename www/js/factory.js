@@ -1,7 +1,7 @@
 angular.module('upetapp.factory', [])
  .value ('PARSE_CREDENTIALS', {
-    APP_ID: 'buDe6GYunFIHzcumek87hGdVlyr26BP5PL6o7kq6',
-    REST_API_KEY: 'BFjBk4Jqrj0dfc89mwYhdb64M18VZenDDRl3DHB0'
+    APP_ID: 'OGavsRu0AOdcpU8ImgtulV1hHlnJGmtcvHvyLsp9',
+    REST_API_KEY: 'tZeSChsWZzsXCPzx66Si2C7LMgqEb3IYNyWaGV4o'
 })
 .factory('Loader', ['$ionicLoading', '$timeout', function($ionicLoading, $timeout) {
 
@@ -30,4 +30,5 @@ angular.module('upetapp.factory', [])
 
 	};
 	return LOADERAPI;
-}]);
+}])
+;

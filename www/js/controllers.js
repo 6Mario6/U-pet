@@ -20,58 +20,37 @@ angular.module('upetapp.controllers', [])
         });
     };
 }])
-.controller('newCtrl', function($rootScope, $scope, $window, Loader,$cordovaDatePicker) {
+.controller('newCtrl', function($rootScope, $scope, $window, Loader) {
   
-    function createFormlyType() {
-   formlyConfig.setType({
-      name: 'inputDatePicker',
-      templateUrl: 'inputDatePicker.html',
-      defaultOptions: {}
-   });
-};
-
- 
-  $scope.formFields = [  {
-    key: 'startDateTime',
-    type: 'inputDatePicker',
-    templateOptions: {
-      dateFormat: 'medium',
-      onclick: function($modelValue, $options) {
-        var options = {
-          date: new Date(),
-          mode: 'datetime', // 'date' or 'time'
-          minDate: new Date(),
-          allowOldDates: false,
-          allowFutureDates: true,
-          doneButtonLabel: 'DONE',
-          doneButtonColor: '#F2F3F4',
-          cancelButtonLabel: 'CANCEL',
-          cancelButtonColor: '#000000'
-        };
-        $cordovaDatePicker.show(options).then(function(date) {
-          $modelValue[$options.key] = date;
-        });
+ $scope.datepickerObject = {
+      titleLabel: 'Title',  //Optional
+      todayLabel: 'Today',  //Optional
+      closeLabel: 'Close',  //Optional
+      setLabel: 'Set',  //Optional
+      setButtonType : 'button-assertive',  //Optional
+      todayButtonType : 'button-assertive',  //Optional
+      closeButtonType : 'button-assertive',  //Optional
+      inputDate: new Date(),    //Optional
+      mondayFirst: true,    //Optional
+      templateType: 'popup', //Optional
+      showTodayButton: 'true', //Optional
+      modalHeaderColor: 'bar-positive', //Optional
+      modalFooterColor: 'bar-positive', //Optional
+      from: new Date(2012, 8, 2),   //Optional
+      to: new Date(2018, 8, 25),    //Optional
+      callback: function (val) {    //Mandatory
+        datePickerCallback(val);
       }
-    }
-  }, ]
+    };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  var datePickerCallback = function (val) {
+  if (typeof(val) === 'undefined') {
+    console.log('No date selected');
+  } else {
+    console.log('Selected date is : ', val)
+    $scope.datepickerObject.inputDate = val;
+  }
+};
   $scope.data = {
     pet: "",
     id:"",
@@ -91,14 +70,15 @@ $scope.createNew = function() {
     var breed = this.data.breed;
     var gender = this.data.gender;
     var birthdate = this.data.birthdate;
+
+
+
      if (!name  ||!idm  || !species|| !breed|| !gender|| !birthdate) {
       Loader.toggleLoadingWithMessage("Por favor ingrese los datos", 2000);
       return false;
     }
     var pet = Parse.Object.extend("pet");
     var query = new Parse.Query(pet);
-    query.equalTo("idm", idm);
-
 
     $scope.modal.hide();
     var user = Parse.User.current();   
@@ -155,8 +135,7 @@ $scope.createNew = function() {
     if (currentUser) {
         $scope.pets = [];
         var relation = currentUser.relation("pet");
-
-        relation.query().find({
+         relation.query().find({
             success: function(list) {
             $scope.pets=list;
                 if ($scope.pets.length == 0) {
@@ -166,7 +145,6 @@ $scope.createNew = function() {
                 }
         }
         });
-
        $ionicModal.fromTemplateUrl('templates/newPet.html', function(modal) {
         $scope.newTemplate = modal;
         });
@@ -176,9 +154,7 @@ $scope.createNew = function() {
   } else {
     $window.location.reload(true);
      $state.go('welcome');
-     
  }
-
 
 })
 
