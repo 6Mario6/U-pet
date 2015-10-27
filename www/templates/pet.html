@@ -8,11 +8,20 @@
  </div>
   <ion-content class="has-subheader">
    <ion-list ng-hide="noData">
-   		 <ion-item>
+   	<ion-item ng-repeat='item in pets' class="item item-avatar" >
+       <img src="img/ionic.png">
+       <h2>{{item.get('name')}}</h2>
+        <p>{{item.get('species')}}</p>
    		 </ion-item>
+      
+       <div class="list" style="text-align:center">
+    <button class="button  button-outline button-royal activated" ng-click="newPet()" >Nueva mascota</button>
+  </div>
+
    </ion-list>
-   <div class="card" >
-      <div class="item item-text-wrap" ng-show="noData"><span>
+   
+   <div class="card" ng-show="noData" >
+      <div class="item item-text-wrap" ><span>
          No hay mascotas agregadas. Click  <a href="javascript:" ng-click="newPet()">aqui</a> para ingresar mascota.
          </span>
       </div>

@@ -20,7 +20,58 @@ angular.module('upetapp.controllers', [])
         });
     };
 }])
-.controller('newCtrl', function($rootScope, $scope, $window, Loader) {
+.controller('newCtrl', function($rootScope, $scope, $window, Loader,$cordovaDatePicker) {
+  
+    function createFormlyType() {
+   formlyConfig.setType({
+      name: 'inputDatePicker',
+      templateUrl: 'inputDatePicker.html',
+      defaultOptions: {}
+   });
+};
+
+ 
+  $scope.formFields = [  {
+    key: 'startDateTime',
+    type: 'inputDatePicker',
+    templateOptions: {
+      dateFormat: 'medium',
+      onclick: function($modelValue, $options) {
+        var options = {
+          date: new Date(),
+          mode: 'datetime', // 'date' or 'time'
+          minDate: new Date(),
+          allowOldDates: false,
+          allowFutureDates: true,
+          doneButtonLabel: 'DONE',
+          doneButtonColor: '#F2F3F4',
+          cancelButtonLabel: 'CANCEL',
+          cancelButtonColor: '#000000'
+        };
+        $cordovaDatePicker.show(options).then(function(date) {
+          $modelValue[$options.key] = date;
+        });
+      }
+    }
+  }, ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   $scope.data = {
     pet: "",
     id:"",
@@ -68,6 +119,8 @@ $scope.createNew = function() {
         relation.add(pet);
         $rootScope.user.save();
          Loader.toggleLoadingWithMessage("Se ingreso la mascota con éxito", 2000);
+        $window.location.reload(true);
+
      },
          error: function(pet, error) {
             Loader.toggleLoadingWithMessage("No se pudo ingresar la mascota", 2000);
@@ -101,17 +154,18 @@ $scope.createNew = function() {
     var currentUser = Parse.User.current();
     if (currentUser) {
         $scope.pets = [];
+        var relation = currentUser.relation("pet");
 
-        
-
-
-
-        if ($scope.pets.length == 0) {
-          $scope.noData = true;
-      } else {
-          $scope.noData = false;
-      }
-
+        relation.query().find({
+            success: function(list) {
+            $scope.pets=list;
+                if ($scope.pets.length == 0) {
+                    $scope.noData = true;
+                } else {
+                 $scope.noData = false;
+                }
+        }
+        });
 
        $ionicModal.fromTemplateUrl('templates/newPet.html', function(modal) {
         $scope.newTemplate = modal;
@@ -119,13 +173,10 @@ $scope.createNew = function() {
        $scope.newPet = function() {
         $scope.newTemplate.show();
         };
-
-
-
-
   } else {
+    $window.location.reload(true);
      $state.go('welcome');
-     $window.location.reload(true);
+     
  }
 
 
@@ -229,8 +280,6 @@ $scope.createNew = function() {
     $scope.error = {};
 
     $scope.register = function() {
-
-        // TODO: add age verification step
 
         Loader.showLoading();
 
