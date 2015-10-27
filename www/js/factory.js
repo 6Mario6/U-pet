@@ -1,4 +1,8 @@
 angular.module('upetapp.factory', [])
+ .value ('PARSE_CREDENTIALS', {
+    APP_ID: 'buDe6GYunFIHzcumek87hGdVlyr26BP5PL6o7kq6',
+    REST_API_KEY: 'BFjBk4Jqrj0dfc89mwYhdb64M18VZenDDRl3DHB0'
+})
 .factory('Loader', ['$ionicLoading', '$timeout', function($ionicLoading, $timeout) {
 
 	var LOADERAPI = {

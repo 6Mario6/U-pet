@@ -1,14 +1,14 @@
 angular.module('upetapp.controllers', [])
 
-.controller('AppController', ['$scope', '$state', '$rootScope', '$ionicHistory', '$stateParams','Loader',
-    function($scope, $state, $rootScope, $ionicHistory, $stateParams,Loader) {
+.controller('AppController', ['$scope', '$state', '$rootScope', '$ionicHistory', '$stateParams','$window','Loader',
+    function($scope, $state, $rootScope, $ionicHistory, $stateParams,$window,Loader) {
     if ($stateParams.clear) {
         $ionicHistory.clearHistory();
         $ionicHistory.clearCache();
     }
-    alert($rootScope.isLoggedIn);
     if (!$rootScope.isLoggedIn) {
          $state.go('welcome');
+         $window.location.reload(true);
     }
     $scope.logout = function() {
         Parse.User.logOut();
@@ -20,7 +20,63 @@ angular.module('upetapp.controllers', [])
         });
     };
 }])
+.controller('newCtrl', function($rootScope, $scope, $window, Loader) {
+  $scope.data = {
+    pet: "",
+    id:"",
+    species:"",
+    breed:"",
+    gender:"",
+    birthdate:""
 
+  };
+  $scope.close = function() {
+    $scope.modal.hide();
+  };
+$scope.createNew = function() {
+    var name = this.data.pet;
+    var idm = this.data.idm;
+    var species = this.data.species;
+    var breed = this.data.breed;
+    var gender = this.data.gender;
+    var birthdate = this.data.birthdate;
+     if (!name  ||!idm  || !species|| !breed|| !gender|| !birthdate) {
+      Loader.toggleLoadingWithMessage("Por favor ingrese los datos", 2000);
+      return false;
+    }
+    var pet = Parse.Object.extend("pet");
+    var query = new Parse.Query(pet);
+    query.equalTo("idm", idm);
+
+
+    $scope.modal.hide();
+    var user = Parse.User.current();   
+    var pet = new Parse.Object("pet");
+    pet.set("idm", idm);
+    pet.set("name", name);
+    pet.set("species", species);
+    pet.set("breed", breed);
+    pet.set("gender", gender);
+    pet.set("birthdate", birthdate);
+    var relation = pet.relation("User");
+    $rootScope.relation=user.relation("pet");
+    relation.add(user);
+    $rootScope.user=user;
+    pet.save(null, {
+        success: function(pet) {
+        var relation=$rootScope.relation;
+        relation.add(pet);
+        $rootScope.user.save();
+         Loader.toggleLoadingWithMessage("Se ingreso la mascota con éxito", 2000);
+     },
+         error: function(pet, error) {
+            Loader.toggleLoadingWithMessage("No se pudo ingresar la mascota", 2000);
+        }
+});
+
+ };
+
+})
 .controller('WelcomeController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
     if ($stateParams.clear) {
         $ionicHistory.clearHistory();
@@ -40,17 +96,39 @@ angular.module('upetapp.controllers', [])
     }
 })
 
-.controller('PetController', function($scope, $state, $rootScope) {
+.controller('PetController', function($scope, $state, $rootScope,$ionicModal,$window) {
 
-    if (!$rootScope.isLoggedIn) {
-         $state.go('welcome');
-    }
-    $scope.pets = [];
-     if ($scope.pets.length == 0) {
-      $scope.noData = true;
-    } else {
-      $scope.noData = false;
-    }
+    var currentUser = Parse.User.current();
+    if (currentUser) {
+        $scope.pets = [];
+
+        
+
+
+
+        if ($scope.pets.length == 0) {
+          $scope.noData = true;
+      } else {
+          $scope.noData = false;
+      }
+
+
+       $ionicModal.fromTemplateUrl('templates/newPet.html', function(modal) {
+        $scope.newTemplate = modal;
+        });
+       $scope.newPet = function() {
+        $scope.newTemplate.show();
+        };
+
+
+
+
+  } else {
+     $state.go('welcome');
+     $window.location.reload(true);
+ }
+
+
 })
 
 .controller('LoginController', [ '$scope', '$state', '$rootScope', 'Loader',
