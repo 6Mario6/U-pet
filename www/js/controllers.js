@@ -47,7 +47,7 @@ angular.module('upetapp.controllers', [])
   if (typeof(val) === 'undefined') {
     console.log('No date selected');
   } else {
-    console.log('Selected date is : ', val)
+  
     $scope.datepickerObject.inputDate = val;
   }
 };
@@ -69,7 +69,7 @@ $scope.createNew = function() {
     var species = this.data.species;
     var breed = this.data.breed;
     var gender = this.data.gender;
-    var birthdate = this.data.birthdate;
+    var birthdate = $scope.datepickerObject.inputDate ;
 
 
 
