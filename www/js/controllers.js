@@ -7,38 +7,37 @@ angular.module('upetapp.controllers', [])
         $ionicHistory.clearCache();
     }
     if (!$rootScope.isLoggedIn) {
+        
          $state.go('welcome');
-         $window.location.reload(true);
+         
     }
     $scope.logout = function() {
         Parse.User.logOut();
         Loader.toggleLoadingWithMessage("Saliendo...", 2000);
         $rootScope.user = null;
         $rootScope.isLoggedIn = false;
-        $state.go('welcome', {
-            clear: true
-        });
+        $state.go('welcome');
     };
 }])
 .controller('newCtrl', function($rootScope, $scope, $window, Loader) {
   
  $scope.datepickerObject = {
-      titleLabel: 'Title',  //Optional
-      todayLabel: 'Today',  //Optional
-      closeLabel: 'Close',  //Optional
-      setLabel: 'Set',  //Optional
-      setButtonType : 'button-assertive',  //Optional
-      todayButtonType : 'button-assertive',  //Optional
-      closeButtonType : 'button-assertive',  //Optional
-      inputDate: new Date(),    //Optional
-      mondayFirst: true,    //Optional
-      templateType: 'popup', //Optional
-      showTodayButton: 'true', //Optional
-      modalHeaderColor: 'bar-positive', //Optional
-      modalFooterColor: 'bar-positive', //Optional
-      from: new Date(2012, 8, 2),   //Optional
-      to: new Date(2018, 8, 25),    //Optional
-      callback: function (val) {    //Mandatory
+      titleLabel: 'Fecha de nacimiento', 
+      todayLabel: 'Hoy',  
+      closeLabel: 'Cerrar',  
+      setLabel: 'OK',  
+      setButtonType : 'button-royal',  
+      todayButtonType : 'button-royal',  
+      closeButtonType : 'button-royal',  
+      inputDate: new Date(),   
+      mondayFirst: true,  
+      templateType: 'popup', 
+      showTodayButton: 'false', 
+      modalHeaderColor: 'bar-positive',
+      modalFooterColor: 'bar-positive', 
+      from: new Date(1988, 8, 2),  
+      to: new Date(2018, 8, 25),   
+      callback: function (val) {    
         datePickerCallback(val);
       }
     };
@@ -71,8 +70,6 @@ $scope.createNew = function() {
     var gender = this.data.gender;
     var birthdate = $scope.datepickerObject.inputDate ;
 
-
-
      if (!name  ||!idm  || !species|| !breed|| !gender|| !birthdate) {
       Loader.toggleLoadingWithMessage("Por favor ingrese los datos", 2000);
       return false;
@@ -98,7 +95,6 @@ $scope.createNew = function() {
         var relation=$rootScope.relation;
         relation.add(pet);
         $rootScope.user.save();
-         Loader.toggleLoadingWithMessage("Se ingreso la mascota con éxito", 2000);
         $window.location.reload(true);
 
      },
@@ -111,7 +107,7 @@ $scope.createNew = function() {
 
 })
 .controller('WelcomeController', function($scope, $state, $rootScope, $ionicHistory, $stateParams) {
-    if ($stateParams.clear) {
+    if (!$rootScope.isLoggedIn) {
         $ionicHistory.clearHistory();
         $ionicHistory.clearCache();
     }
@@ -130,18 +126,31 @@ $scope.createNew = function() {
 })
 
 .controller('PetController', function($scope, $state, $rootScope,$ionicModal,$window) {
-
+     if (!$rootScope.isLoggedIn) {
+        
+         $state.go('welcome');
+         
+    }
     var currentUser = Parse.User.current();
     if (currentUser) {
         $scope.pets = [];
+
         var relation = currentUser.relation("pet");
          relation.query().find({
             success: function(list) {
-            $scope.pets=list;
-                if ($scope.pets.length == 0) {
+                if (list.length == 0) {
                     $scope.noData = true;
                 } else {
-                 $scope.noData = false;
+                $scope.noData = false;
+                 for (var i = 0; i < list.length; i++) {
+                     var item = {
+                        name: "",
+                        species:""
+                     };
+                    item.name= list[i].get('name');
+                    item.species= list[i].get('species');
+                    $scope.pets.push(item);
+                  }
                 }
         }
         });
@@ -152,7 +161,6 @@ $scope.createNew = function() {
         $scope.newTemplate.show();
         };
   } else {
-    $window.location.reload(true);
      $state.go('welcome');
  }
 
@@ -292,32 +300,4 @@ $scope.createNew = function() {
     };
 }
 ])
-.controller('MainController',[ '$scope', '$state', '$rootScope', '$stateParams', '$ionicHistory','Loader', 
-    function($scope, $state, $rootScope, $stateParams, $ionicHistory,Loader) {
-    if ($stateParams.clear) {
-        $ionicHistory.clearHistory();
-    }
-
-    $scope.rightButtons = [{
-        type: 'button-positive',
-        content: '<i class="icon ion-navicon"></i>',
-        tap: function(e) {
-            $scope.sideMenuController.toggleRight();
-        }
-    }];
-
-    $scope.logout = function() {
-        Parse.User.logOut();
-        Loader.toggleLoadingWithMessage("Saliendo...", 2000);
-        $rootScope.user = null;
-        $rootScope.isLoggedIn = false;
-        $state.go('welcome', {
-            clear: true
-        });
-    };
-
-    $scope.toggleMenu = function() {
-        $scope.sideMenuController.toggleRight();
-    };
-    }
-]);
+;

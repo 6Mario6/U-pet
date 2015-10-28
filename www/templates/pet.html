@@ -6,12 +6,13 @@
         <input type="search" ng-model="query" placeholder="Search">
       </lable>
  </div>
-  <ion-content class="has-subheader">
+  <ion-content class="has-subheader" scroll="true">
    <ion-list ng-hide="noData">
-   	<ion-item ng-repeat='item in pets' class="item item-avatar" >
+   	<ion-item ng-repeat='item in pets | filter:query' class="item item-avatar" >
        <img src="img/ionic.png">
-       <h2>{{item.get('name')}}</h2>
-        <p>{{item.get('species')}}</p>
+       <h2>{{item.name}}</h2>
+        <p>{{item.species}}</p>
+         <ion-delete-button class="ion-minus-circled" ></ion-delete-button>
    		 </ion-item>
       
        <div class="list" style="text-align:center">

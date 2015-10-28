@@ -28,13 +28,13 @@ angular.module('upetapp',
 })
     .config(function($stateProvider, $urlRouterProvider) {
 $stateProvider.state('welcome', {
-        url : '/welcome?clear',
+        url : '/welcome',
         templateUrl : 'templates/welcome.html',
         controller : 'WelcomeController'
     })
 
     .state('app', {
-        url : '/app?clear',
+        url : '/app',
         abstract : true,
         templateUrl : 'templates/menu.html',
         controller : 'AppController'
